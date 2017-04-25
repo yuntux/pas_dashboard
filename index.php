@@ -1,5 +1,5 @@
 <?php
-$_TEST_MOD=1;
+$_TEST_MOD=0;
 
 if ($_TEST_MOD==1){
 	ini_set('display_errors', 'On');
@@ -7,7 +7,7 @@ if ($_TEST_MOD==1){
 }
 header('Content-Type: text/html; charset=utf-8');
 
-// PARAMETERS
+/***************** PARAMETERS *****************/
 $answers_file = "private/reponses.csv";
 $_USERS_FILE = "private/collecteurs.csv";
 date_default_timezone_set('Europe/Paris');
@@ -65,13 +65,13 @@ function get_session_hash(){
 			return false;
 }
 
-init_user_list();
-//var_dump($_USERS);
 
-$t="";
-foreach ($_POST as $key=>$value)
-	$t.=$key.";";
-print $t;
+function list_headers(){
+	$t="";
+	foreach ($_POST as $key=>$value)
+		$t.=$key.";";
+	print $t;
+}
 
 function get_last_answer($targeted_login){
 	global $answers_file;
@@ -121,11 +121,15 @@ function add_vote(){
     }
 }
 
+/***************** MAIN ENTRY POINT / CONTROLER *****************/
+init_user_list();
+//var_dump($_USERS);
+
 if (isset($_GET['action'])  && get_session_hash() && exists_user()){
 	$admin_status = get_admin_status();
-	if ($_GET['action']=='list_results')
+	if ($_GET['action']=='list_answers')
 		if ($admin_status==True)
-			list_result();
+			list_answers();
 		else
 			admin_required_view();
 	if ($_GET['action']=='vote'){
@@ -144,8 +148,16 @@ if (isset($_GET['action'])  && get_session_hash() && exists_user()){
 	echo "Pas d'action, pas de hash ou utilsateur inconnu.";
 }
 
-// VUE
+/***************** VIEW *****************/
 
+function list_answers(){
+    global $answers_file;
+    if (($handle = fopen($answers_file, "r")) !== FALSE) {
+        $r = fread($handle,filesize($answers_file));
+		echo $r;
+        fclose($handle);
+    }
+}
 
 function display_form($last_answer){
 	global $_URL;
@@ -168,14 +180,13 @@ echo '<html>
 <body>
 ';
 
-/*
+
 	if (get_admin_status()==True) {
 		echo '<br><br><b>Menu administrateur :</b>
-		<br><a href="'.$_URL.'?action=list_results&hash='.get_session_hash().'">Voir l\'historique des votes.</a>
-		<br><a href="'.$_URL.'?action=count_results&hash='.get_session_hash().'">Voir le classement.</a>
+		<br><a href="'.$_URL.'?action=list_answerss&hash='.get_session_hash().'">Voir les réponses</a>
 		<br><br>';
 	}
-*/
+
 	echo '
 	<form name="world" id="world" method="POST" action="'.$_URL.'?hash='.get_session_hash().'&action=vote">
 <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
@@ -188,18 +199,34 @@ webshims.polyfill("forms forms-ext");
 	Organisme : '.get_user_name().' <br>
 	Dernière réponse : '.$last_answer_date.' 
 
+NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les date effectives.
+
 	<br><br>
 	<h2>Périmètre</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
+
+// PRODUIT MAISON OU PAS<br>
+// Si éditeur, quel éditeur<br>
+// CIRCUIT : DSN ou PASRAU<br>
+//ECHAPPER via fput
 	<tr><td>Nombre de bénéficiaires</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaires',$answer_array).'</td>
 		<td><input type="number" name="perimetre_nb_beneficiaire" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Total des sommes versées sur l\'année 2016  potentiellement imposables</td>
+	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
+		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
+		<td><input type="date" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Nombre d\'usagers dont le NIR est certifié</td>
+		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
+		<td><input type="date" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+
+	<tr><td>Total des sommes versées sur l\'année (qui auraient été soumises au PAS au 1/1/2018)</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_assiette',$answer_array).'</td>
 		<td><input type="number" name="perimetre_assiette" value="'.get_answer_from_key('perimetre_assiette',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -210,64 +237,73 @@ webshims.polyfill("forms forms-ext");
 	<tr>
 		<td>ID</td>
 		<td>Nom du lot</td>
-		<td>Date de fin de développements</td>
-		<td>Date de fin des tests fabriquant</td>
-		<td>Date de fin de la recette fonctionnelle assemblée</td>
-		<td>Date d\'entrée en pilote</td>
-		<td>Nombre d\'anomalies bloquantes ouvertes</td>
-		<td>Nombre d\'anomalies total ouvertes</td>
+		<td>Date de fin de développements et de la recette unitaire (effective ou prévisionnelle)</td>
+		<td>Date d\'entrée en "pilote" (effective ou prévisionnelle)</td>
+		<td>Date de fin de VABF (effective ou prévisionnelle)</td>
+		<td>Date de fin de VSR (effective ou prévisionnelle)</td>
+//AJOUTER UNE COLONNE NOIR / SEPARATEUR
+		<td>Nombre d\'anomalies bloquantes ouvertes à date</td>
+		<td>Nombre d\'anomalies total ouvertes à date</td>
 	</tr>
+
+Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant selon ce lotissement.
+
 	<tr>
 		<td>#1</td>
 		<td><input type="text" name="lot1_nom" value="'.get_answer_from_key('lot1_nom',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot1_date_fin_dev" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_test_fab" value="'.get_answer_from_key('lot1_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot1_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot1_date_entree_pilote" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot1_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot1_date_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_VSR" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot1_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot1_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#2</td>
 		<td><input type="text" name="lot2_nom" value="'.get_answer_from_key('lot2_nom',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot2_date_fin_dev" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_test_fab" value="'.get_answer_from_key('lot2_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot2_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot2_date_entree_pilote" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot2_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot2_date_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_VABF" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot2_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot2_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#3</td>
 		<td><input type="text" name="lot3_nom" value="'.get_answer_from_key('lot3_nom',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot3_date_fin_dev" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_test_fab" value="'.get_answer_from_key('lot3_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot3_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot3_date_entree_pilote" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot3_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="number" name="lot3_date_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_VABF" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
 	<br><br>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Date de mise en production du lot de gestion des flux</td>
+	<tr><td>Déclaration de conformité réalisée auprès de la CNIL</td>
+		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
+// TYPE : OUI / NON
+		<td><input type="date" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date de mise en production du lot de gestion des flux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
 		<td><input type="date" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date effective de l\'initialisation des taux</td>
+	<tr><td>Date effective de l\'initialisation des taux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_init_taux',$answer_array).'</td>
 		<td><input type="date" name="date_init_taux" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date de mise en production du lot de prélèvement</td>
+	<tr><td>Date de mise en production du lot de prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_prelevement',$answer_array).'</td>
 		<td><input type="date" name="date_mep_prelevement" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date effective du premier prélèvement</td>
+	<tr><td>Date effective du premier prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_premier_prelevement',$answer_array).'</td>
 		<td><input type="date" name="date_premier_prelevement" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -276,124 +312,110 @@ webshims.polyfill("forms forms-ext");
 
 	<h2>Éléments budgétaires</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Budget total prévu pour le projet (interne et externe, toutes phases confondues)</td>
+	<tr><td>Budget SI MOE prévu pour le projet (interne et externe, toutes phases confondues)</td>
 		<td style="text-align:center;">'.get_answer_from_key('budget_total',$answer_array).'</td>
 		<td><input type="number" name="budget_total" value="'.get_answer_from_key('budgte_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Budget actuellement engagé (interne et externe, toutes phases confondues)</td>
+//Dissocier interne en jh et externe en euros
+	<tr><td>Budget SI MOE actuellement engagé (interne et externe, toutes phases confondues)</td>
 		<td style="text-align:center;">'.get_answer_from_key('budget_engage',$answer_array).'</td>
 		<td><input type="number" name="budget_engage" value="'.get_answer_from_key('budget_engage',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
 
-	<h2>Questions en instance</h2>
+	<h2>Points ouverts</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Nombre de questions fonctionnelles en instance auprès de la DGFiP</td>
+	<tr><td>Nombre de points ouverts fonctionnelles en instance auprès de la DGFiP</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_fonctionnelles" value="'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Nombre de questions tecniques  en instance auprès du GIP MDS</td>
+	<tr><td>Nombre de points ouverts techniques en instance auprès du GIP MDS</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_techniques',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_techniques" value="'.get_answer_from_key('nb_questions_techniques',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
 	<br><br>
-	<h2>Bonnes pratiques de sécurisation des paiements</h2>
+	<h2>Suivi de pratiques de sécurisation des paiements</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Durée de la période de paiement à blanc</td>
+// OUI / NON
+// SI oui date de début
+// Si oui date de fin
+
+	<tr><td>Période de paiement à blanc</td>
 		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_blanc',$answer_array).'</td>
 		<td><input type="number" name="periode_paiement_blanc" value="'.get_answer_from_key('periode_paiement_blanc',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Durée de la période de paiement en double</td>
+	<tr><td>Période de paiement en double</td>
 		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_double',$answer_array).'</td>
 		<td><input type="number" name="periode_paiement_double" value="'.get_answer_from_key('periode_paiement_double',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Durée de la période de correction</td>
+	<tr><td>Période de correction</td>
 		<td style="text-align:center;">'.get_answer_from_key('periode_correction',$answer_array).'</td>
 		<td><input type="number" name="periode_paiement_correction" value="'.get_answer_from_key('periode_paiement_courrection',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
+
+	<tr><td>Possibilité de paramétrer une date d\'activation du prélèvement</td>
+// OUI / NON
+		<td style="text-align:center;">'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'</td>
+		<td><input type="date" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+
 	</table>
 
 
 	<br><br>
-	<h2>Calage du processus de reversement à la DGFiP</h2>
+	<h2>Préparation du processus de prélèvement de l\'impôt collecté par la DGFiP</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
+// Besoin de création d\'un SIRET : OUI / NON
+// Nouveau SIRET effectivement créé par l\'INSEE : OUI / NON
+
 	<tr><td>Date de création des SIRET à l\'INSEE</td>
 		<td style="text-align:center;">'.get_answer_from_key('creation_siret_insee',$answer_array).'</td>
 		<td><input type="date" name="creation_siret_insee" value="'.get_answer_from_key('creation_siret_insee',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
+// INSCRIPTION sur netentreprise : OUI / NON
+// INSCIRPTION de tous les SIRET dans la déclaration PASRAU/DSN : OUI / NON
 	<tr><td>Date d\'inscription sur NetEntreprise</td>
 		<td style="text-align:center;">'.get_answer_from_key('inscription_net_entreprise',$answer_array).'</td>
 		<td><input type="date" name="inscription_net_entreprise" value="'.get_answer_from_key('incription_net_entreprise',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date d\'ouverture des comptes ACOSS le cas échéant</td>
-		<td style="text-align:center;">'.get_answer_from_key('ouverture_comptes_accoss',$answer_array).'</td>
-		<td><input type="date" name="ouverture_comptes_accoss" value="'.get_answer_from_key('ouverture_comptes_accoss',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Information des comptables et directions juridiques du réseau</td>
-		<td style="text-align:center;">'.get_answer_from_key('info_comptables_reseau',$answer_array).'</td>
-		<td><input type="date" name="info_comptables_reseau" value="'.get_answer_from_key('info_comptables_reseau',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
+//VALIDATION par l\'agence comptable : OUI / NON
 	</table>
 
-
-	<br><br>
-	<h2>Calage du processus de déclaration dégradé</h2>
-	<table>
-	<tr style="text-align:center;"><td>Question</td>
-		<td>Valeur précédente</td>
-		<td>Nouvelle valeur</td>
-	</tr>
-	<tr><td>Identification des acteurs</td>
-		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_acteurs',$answer_array).'</td>
-		<td><input type="date" name="process_dec_degrade_acteurs" value="'.get_answer_from_key('process_dec_degrade_acteurs',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Formation au dépôt manuel</td>
-		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_formation_depot_manuel',$answer_array).'</td>
-		<td><input type="date" name="process_dec_degrade_formation_depot_manuel" value="'.get_answer_from_key('process_dec_degrade_formation_depot_manuel',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Mise à disposition des accès</td>
-		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_codes_acces',$answer_array).'</td>
-		<td><input type="date" name="process_dec_degrade_codes_acces" value="'.get_answer_from_key('process_dec_degrade_codes_acces',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	</table>
 
 	<br><br>
 	<h2>Formalisation du processus de gestion de crise</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Déterminer les membres de la cellule de crise</td>
+
+// Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des versements aux bénéficiaires : OUI / NON
+// Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des prélèvements par la DGFIP de l\'impôt collecté : OUI / NON
+
+	<tr><td>Organisation de la cellule de cris et identification de ses membres de la cellule de crise</td>
+OUI/NON
 		<td style="text-align:center;">'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'</td>
 		<td><input type="date" name="process_crise_membres_cellule_crise" value="'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Capacité à stopper le prélèvement (désactivation ou paramétrage d\'une date d\'effet)</td>
-		<td style="text-align:center;">'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'</td>
-		<td><input type="date" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Déterminer les cannaux de communication</td>
-		<td style="text-align:center;">'.get_answer_from_key('process_crise_cannaux_com',$answer_array).'</td>
-		<td><input type="date" name="process_crise_cannaux_com" value="'.get_answer_from_key('process_crise_cannaux_com',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
@@ -402,7 +424,7 @@ webshims.polyfill("forms forms-ext");
 	<br><br>
 	<h2>Données d\'identification</h2>
 	<table>
-	<tr style="text-align:center;"><td>Question</td>
+	<tr style="text-align:center;"><td>Questions</td>
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
@@ -412,19 +434,7 @@ webshims.polyfill("forms forms-ext");
 		<td><input type="date" name="identification_nb_usagers" value="'.get_answer_from_key('identification_nb_usagers',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 -->
-	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
-		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
-		<td><input type="date" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
-	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
-		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
-		<td><input type="date" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
 	</table>
-
-	<br><br>
-	<h2>Automatisation des régularisations</h2>
-
 
 	<br>
 	<input type="submit" name="submit" style="width: 150px; height: 35px; display:block; margin:auto;" value="Valider"/>

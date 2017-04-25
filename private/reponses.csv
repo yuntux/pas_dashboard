@@ -1,1 +1,8 @@
 date;login;perimetre_nb_beneficiaire;perimetre_assiette;lot1_nom;lot1_date_fin_dev;lot1_date_fin_test_fab;lot1_date_fin_recette_fonctionnelle;lot1_date_entree_pilote;lot1_date_nb_anomalies_bloquantes;lot1_date_nb_anomalies_total;lot2_nom;lot2_date_fin_dev;lot2_date_fin_test_fab;lot2_date_fin_recette_fonctionnelle;lot2_date_entree_pilote;lot2_date_nb_anomalies_bloquantes;lot2_date_nb_anomalies_total;lot3_nom;lot3_date_fin_dev;lot3_date_fin_test_fab;lot3_date_fin_recette_fonctionnelle;lot3_date_entree_pilote;lot3_date_nb_anomalies_bloquantes;lot3_date_nb_anomalies_total;date_mep_flux;date_init_taux;date_mep_prelevement;date_premier_prelevement;budget_total;budget_engage;nb_questions_fonctionnelles;nb_questions_techniques;periode_paiement_blanc;periode_paiement_double;periode_paiement_correction;creation_siret_insee;inscription_net_entreprise;ouverture_comptes_accoss;info_comptables_reseau;process_dec_degrade_acteurs;process_dec_degrade_formation_depot_manuel;process_dec_degrade_codes_acces;process_crise_membres_cellule_crise;process_crise_desactiver_prelevement;process_crise_cannaux_com;identification_nb_nir_connus;identification_nb_nir_certifies
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
+"25/Apr/2017 13:19:54 ";collecteur1;1;2;a;;;;;5;6;b;;;;;;8;c;;;;;7;;;;;;;;;;;;;;;;;;
