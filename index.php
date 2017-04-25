@@ -68,6 +68,11 @@ function get_session_hash(){
 init_user_list();
 //var_dump($_USERS);
 
+$t="";
+foreach ($_POST as $key=>$value)
+	$t.=$key.";";
+print $t;
+
 function get_last_answer($targeted_login){
 	global $answers_file;
 	$last_answers = [];
@@ -100,10 +105,8 @@ function add_vote(){
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 1000, ";");
-		print_r($headers);
 		array_shift($headers); //unstack timestamp
 		array_shift($headers); //unstack login
-		print_r($headers);
 		foreach ($headers as $h){
 			if (array_key_exists($h, $_POST)){
 				array_push($line_to_add, $_POST[$h]);
@@ -186,9 +189,107 @@ webshims.polyfill("forms forms-ext");
 	Dernière réponse : '.$last_answer_date.' 
 
 	<br><br>
-	<h2>Questions en instance</h2>
+	<h2>Périmètre</h2>
 	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Nombre de bénéficiaires</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaires',$answer_array).'</td>
+		<td><input type="number" name="perimetre_nb_beneficiaire" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Total des sommes versées sur l\'année 2016  potentiellement imposables</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_assiette',$answer_array).'</td>
+		<td><input type="number" name="perimetre_assiette" value="'.get_answer_from_key('perimetre_assiette',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
 	</table>
+
+	<h2>Avancement dans les jalons projet</h2>
+	<table>
+	<tr>
+		<td>ID</td>
+		<td>Nom du lot</td>
+		<td>Date de fin de développements</td>
+		<td>Date de fin des tests fabriquant</td>
+		<td>Date de fin de la recette fonctionnelle assemblée</td>
+		<td>Date d\'entrée en pilote</td>
+		<td>Nombre d\'anomalies bloquantes ouvertes</td>
+		<td>Nombre d\'anomalies total ouvertes</td>
+	</tr>
+	<tr>
+		<td>#1</td>
+		<td><input type="text" name="lot1_nom" value="'.get_answer_from_key('lot1_nom',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_dev" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_test_fab" value="'.get_answer_from_key('lot1_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot1_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_entree_pilote" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot1_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot1_date_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr>
+		<td>#2</td>
+		<td><input type="text" name="lot2_nom" value="'.get_answer_from_key('lot2_nom',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_dev" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_test_fab" value="'.get_answer_from_key('lot2_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot2_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_entree_pilote" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot2_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot2_date_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr>
+		<td>#3</td>
+		<td><input type="text" name="lot3_nom" value="'.get_answer_from_key('lot3_nom',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_dev" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_test_fab" value="'.get_answer_from_key('lot3_date_fin_test_fab',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_recette_fonctionnelle" value="'.get_answer_from_key('lot3_date_fin_recette_fonctionnelle',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_entree_pilote" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot3_date_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot3_date_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+	<br><br>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Date de mise en production du lot de gestion des flux</td>
+		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
+		<td><input type="date" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date effective de l\'initialisation des taux</td>
+		<td style="text-align:center;">'.get_answer_from_key('date_init_taux',$answer_array).'</td>
+		<td><input type="date" name="date_init_taux" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date de mise en production du lot de prélèvement</td>
+		<td style="text-align:center;">'.get_answer_from_key('date_mep_prelevement',$answer_array).'</td>
+		<td><input type="date" name="date_mep_prelevement" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date effective du premier prélèvement</td>
+		<td style="text-align:center;">'.get_answer_from_key('date_premier_prelevement',$answer_array).'</td>
+		<td><input type="date" name="date_premier_prelevement" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+
+	<h2>Éléments budgétaires</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Budget total prévu pour le projet (interne et externe, toutes phases confondues)</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_total',$answer_array).'</td>
+		<td><input type="number" name="budget_total" value="'.get_answer_from_key('budgte_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Budget actuellement engagé (interne et externe, toutes phases confondues)</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_engage',$answer_array).'</td>
+		<td><input type="number" name="budget_engage" value="'.get_answer_from_key('budget_engage',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
 
 	<h2>Questions en instance</h2>
 	<table>
@@ -305,10 +406,12 @@ webshims.polyfill("forms forms-ext");
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
+<!--
 	<tr><td>Nombre d\'usagers</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_usagers',$answer_array).'</td>
 		<td><input type="date" name="identification_nb_usagers" value="'.get_answer_from_key('identification_nb_usagers',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
+-->
 	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
 		<td><input type="date" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
