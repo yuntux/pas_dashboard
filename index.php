@@ -162,7 +162,8 @@ echo '<html>
 	<title>PAS - Données projet</title>
 	<meta charset="UTF-8" />
 </head>
-<body>';
+<body>
+';
 
 /*
 	if (get_admin_status()==True) {
@@ -174,11 +175,21 @@ echo '<html>
 */
 	echo '
 	<form name="world" id="world" method="POST" action="'.$_URL.'?hash='.get_session_hash().'&action=vote">
+<script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+<script>
+    webshims.setOptions("forms-ext", {types: "date"});
+webshims.polyfill("forms forms-ext");
+</script>
+
 	<h1>Prélèvement à la source - Collecte de données projet</h1>
 	Organisme : '.get_user_name().' <br>
 	Dernière réponse : '.$last_answer_date.' 
 
 	<br><br>
+	<h2>Questions en instance</h2>
+	<table>
+	</table>
+
 	<h2>Questions en instance</h2>
 	<table>
 	<tr style="text-align:center;"><td>Question</td>
@@ -187,9 +198,131 @@ echo '<html>
 	</tr>
 	<tr><td>Nombre de questions fonctionnelles en instance auprès de la DGFiP</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'</td>
-		<td><input type="text" name="nb_questions_fonctionnelles" value="'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="nb_questions_fonctionnelles" value="'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Nombre de questions tecniques  en instance auprès du GIP MDS</td>
+		<td style="text-align:center;">'.get_answer_from_key('nb_questions_techniques',$answer_array).'</td>
+		<td><input type="number" name="nb_questions_techniques" value="'.get_answer_from_key('nb_questions_techniques',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
+
+	<br><br>
+	<h2>Bonnes pratiques de sécurisation des paiements</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Durée de la période de paiement à blanc</td>
+		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_blanc',$answer_array).'</td>
+		<td><input type="number" name="periode_paiement_blanc" value="'.get_answer_from_key('periode_paiement_blanc',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Durée de la période de paiement en double</td>
+		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_double',$answer_array).'</td>
+		<td><input type="number" name="periode_paiement_double" value="'.get_answer_from_key('periode_paiement_double',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Durée de la période de correction</td>
+		<td style="text-align:center;">'.get_answer_from_key('periode_correction',$answer_array).'</td>
+		<td><input type="number" name="periode_paiement_correction" value="'.get_answer_from_key('periode_paiement_courrection',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+
+	<br><br>
+	<h2>Calage du processus de reversement à la DGFiP</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Date de création des SIRET à l\'INSEE</td>
+		<td style="text-align:center;">'.get_answer_from_key('creation_siret_insee',$answer_array).'</td>
+		<td><input type="date" name="creation_siret_insee" value="'.get_answer_from_key('creation_siret_insee',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date d\'inscription sur NetEntreprise</td>
+		<td style="text-align:center;">'.get_answer_from_key('inscription_net_entreprise',$answer_array).'</td>
+		<td><input type="date" name="inscription_net_entreprise" value="'.get_answer_from_key('incription_net_entreprise',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Date d\'ouverture des comptes ACOSS le cas échéant</td>
+		<td style="text-align:center;">'.get_answer_from_key('ouverture_comptes_accoss',$answer_array).'</td>
+		<td><input type="date" name="ouverture_comptes_accoss" value="'.get_answer_from_key('ouverture_comptes_accoss',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Information des comptables et directions juridiques du réseau</td>
+		<td style="text-align:center;">'.get_answer_from_key('info_comptables_reseau',$answer_array).'</td>
+		<td><input type="date" name="info_comptables_reseau" value="'.get_answer_from_key('info_comptables_reseau',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+
+	<br><br>
+	<h2>Calage du processus de déclaration dégradé</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Identification des acteurs</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_acteurs',$answer_array).'</td>
+		<td><input type="date" name="process_dec_degrade_acteurs" value="'.get_answer_from_key('process_dec_degrade_acteurs',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Formation au dépôt manuel</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_formation_depot_manuel',$answer_array).'</td>
+		<td><input type="date" name="process_dec_degrade_formation_depot_manuel" value="'.get_answer_from_key('process_dec_degrade_formation_depot_manuel',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Mise à disposition des accès</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_dec_degrade_codes_acces',$answer_array).'</td>
+		<td><input type="date" name="process_dec_degrade_codes_acces" value="'.get_answer_from_key('process_dec_degrade_codes_acces',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+	<br><br>
+	<h2>Formalisation du processus de gestion de crise</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Déterminer les membres de la cellule de crise</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'</td>
+		<td><input type="date" name="process_crise_membres_cellule_crise" value="'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Capacité à stopper le prélèvement (désactivation ou paramétrage d\'une date d\'effet)</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'</td>
+		<td><input type="date" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Déterminer les cannaux de communication</td>
+		<td style="text-align:center;">'.get_answer_from_key('process_crise_cannaux_com',$answer_array).'</td>
+		<td><input type="date" name="process_crise_cannaux_com" value="'.get_answer_from_key('process_crise_cannaux_com',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+
+
+	<br><br>
+	<h2>Données d\'identification</h2>
+	<table>
+	<tr style="text-align:center;"><td>Question</td>
+		<td>Valeur précédente</td>
+		<td>Nouvelle valeur</td>
+	</tr>
+	<tr><td>Nombre d\'usagers</td>
+		<td style="text-align:center;">'.get_answer_from_key('identification_nb_usagers',$answer_array).'</td>
+		<td><input type="date" name="identification_nb_usagers" value="'.get_answer_from_key('identification_nb_usagers',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
+		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
+		<td><input type="date" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
+		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
+		<td><input type="date" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	</table>
+
+	<br><br>
+	<h2>Automatisation des régularisations</h2>
+
+
 	<br>
 	<input type="submit" name="submit" style="width: 150px; height: 35px; display:block; margin:auto;" value="Valider"/>
 	</form>
