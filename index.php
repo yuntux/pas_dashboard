@@ -265,7 +265,7 @@ echo '<html>
 	Application : '.get_user_application().' <br>
 	Date de la dernière réponse : '.$last_answer_date.' 
 
-<br><br>NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les date effectives.
+<br><br>NOTICE : les dates renseignées sont prévisionnelles si elles sont situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les dates effectives.
 
 	<br><br>
 	<h2>Périmètre</h2>
@@ -438,25 +438,17 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 
 	<h2>Éléments budgétaires</h2>
 	<table>
-	<tr style="text-align:center;"><td>Questions</td>
-		<td>Valeur précédente</td>
-		<td>Nouvelle valeur</td>
+	<tr style="text-align:center;"><td>Type de budget</td>
+		<td>Dépensé/engagé</td>
+		<td>Total</td>
 	</tr>
 	<tr><td>Budget SI MOE interne (exprimé en jh) prévu pour le projet</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_total_interne',$answer_array).'jh</td>
+		<td><input type="number" name="budget_engage_interne" value="'.get_answer_from_key('budget_engage_interne',$answer_array).'" style="text-align:center;"/> jh</td>
 		<td><input type="number" name="budget_total_interne" value="'.get_answer_from_key('budget_total_interne',$answer_array).'" style="text-align:center;"/> jh</td>
 	</tr>
 	<tr><td>Budget SI MOE externe (exprimé en euros, HT) prévu pour le projet</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_total_externe',$answer_array).'€</td>
-		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
-	</tr>
-	<tr><td>Budget SI MOE interne (exprimé en jh) dépensé/engagé</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_engage_interne',$answer_array).'jh</td>
-		<td><input type="number" name="budget_engage_interne" value="'.get_answer_from_key('budget_engage_interne',$answer_array).'" style="text-align:center;"/> jh</td>
-	</tr>
-	<tr><td>Budget SI MOE externe (exprimé en euros, HT) dépensé/engagé</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_engage_externe',$answer_array).'€</td>
 		<td><input type="number" name="budget_engage_externe" value="'.get_answer_from_key('budget_engage_externe',$answer_array).'" style="text-align:center;"/>€</td>
+		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
 	</tr>
 	</table>
 
@@ -467,11 +459,11 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Nombre de points ouverts fonctionnelles en instance auprès de la DGFiP</td>
+	<tr><td>Nombre de points ouverts fonctionnels encore ouverts auprès de la DGFiP</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_fonctionnelles" value="'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Nombre de points ouverts techniques en instance auprès du GIP MDS</td>
+	<tr><td>Nombre de points ouverts techniques encore ouverts auprès du GIP MDS</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_techniques',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_techniques" value="'.get_answer_from_key('nb_questions_techniques',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -480,31 +472,55 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<br><br>
 	<h2>Suivi de pratiques de sécurisation des paiements</h2>
 	<table>
-	<tr style="text-align:center;"><td>Questions</td>
-		<td>Valeur précédente</td>
-		<td>Nouvelle valeur</td>
+	<tr style="text-align:center;">
+		<td>Type de période</td>
+		<td>Prévue dans le planning ?</td>
+		<td>Date de début</td>
+		<td>Date de fin</td>
 	</tr>
-// OUI / NON
-// SI oui date de début
-// Si oui date de fin
 
 	<tr><td>Période de paiement à blanc</td>
-		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_blanc',$answer_array).'</td>
-		<td><input type="number" name="periode_paiement_blanc" value="'.get_answer_from_key('periode_paiement_blanc',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="periode_paiement_blanc_bool">
+				<option value="oui" '.is_selected('periode_paiement_blanc_bool',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('periode_paiement_blanc_bool',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('periode_paiement_blanc_bool',$answer_array,'').'>-</option>
+			</select> si oui ->
+		</td>
+		<td><input type="text" name="debut_periode_paiement_blanc" class="widget_calendar" value="'.get_answer_from_key('debut_periode_paiement_blanc',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="fin_periode_paiement_blanc" class="widget_calendar" value="'.get_answer_from_key('fin_periode_paiement_blanc',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Période de paiement en double</td>
-		<td style="text-align:center;">'.get_answer_from_key('periode_paiement_double',$answer_array).'</td>
-		<td><input type="number" name="periode_paiement_double" value="'.get_answer_from_key('periode_paiement_double',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="periode_paiement_double_bool">
+				<option value="oui" '.is_selected('periode_paiement_double_bool',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('periode_paiement_double_bool',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('periode_paiement_double_bool',$answer_array,'').'>-</option>
+			</select> si oui ->
+		</td>
+		<td><input type="text" name="debut_periode_paiement_double" class="widget_calendar" value="'.get_answer_from_key('debut_periode_paiement_double',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="fin_periode_paiement_double" class="widget_calendar" value="'.get_answer_from_key('fin_periode_paiement_double',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Période de correction</td>
-		<td style="text-align:center;">'.get_answer_from_key('periode_correction',$answer_array).'</td>
-		<td><input type="number" name="periode_paiement_correction" value="'.get_answer_from_key('periode_paiement_courrection',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="periode_corrections_bool">
+				<option value="oui" '.is_selected('periode_correction_bool',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('periode_correction_bool',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('periode_correction_bool',$answer_array,'').'>-</option>
+			</select> si oui -> 
+		</td>
+		<td><input type="text" name="debut_periode_correction" class="widget_calendar" value="'.get_answer_from_key('debut_periode_correction',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="fin_periode_correction" class="widget_calendar" value="'.get_answer_from_key('fin_periode_correction',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 
 	<tr><td>Possibilité de paramétrer une date d\'activation du prélèvement</td>
-// OUI / NON
-		<td style="text-align:center;">'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'</td>
-		<td><input type="text" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="periode_paiement_blanc_bool">
+				<option value="oui" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'').'>-</option>
+			</select>
+		</td>
 	</tr>
 
 	</table>
@@ -517,20 +533,61 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-// Besoin de création d\'un SIRET : OUI / NON
-// Nouveau SIRET effectivement créé par l\'INSEE : OUI / NON
-
-	<tr><td>Date de création des SIRET à l\'INSEE</td>
-		<td style="text-align:center;">'.get_answer_from_key('creation_siret_insee',$answer_array).'</td>
-		<td><input type="text" name="creation_siret_insee" value="'.get_answer_from_key('creation_siret_insee',$answer_array).'" style="text-align:center;"/></td>
+	<tr>
+		<td>Nécessité d\'enregistrer de nouveaux SIRET auprès de l\'INSEE pour mettre en place le PAS</td>
+		<td style="text-align:center;">'.get_answer_from_key('necessite_enregistrement_siret',$answer_array).'</td>
+		<td>
+			<select name="necessite_enregistrement_siret">
+				<option value="oui" '.is_selected('necessite_enregistrement_siret',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('necessite_enregistrement_siret',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('necessite_enregistrement_siret',$answer_array,'').'>-</option>
+			</select>
+		</td>
 	</tr>
-// INSCRIPTION sur netentreprise : OUI / NON
-// INSCIRPTION de tous les SIRET dans la déclaration PASRAU/DSN : OUI / NON
-	<tr><td>Date d\'inscription sur NetEntreprise</td>
-		<td style="text-align:center;">'.get_answer_from_key('inscription_net_entreprise',$answer_array).'</td>
-		<td><input type="text" name="inscription_net_entreprise" value="'.get_answer_from_key('incription_net_entreprise',$answer_array).'" style="text-align:center;"/></td>
+	<tr>
+		<td>Nouveaux SIRET effectivement créés</td>
+		<td style="text-align:center;">'.get_answer_from_key('enregistrement_effectif_siret',$answer_array).'</td>
+		<td>
+			<select name="enregistrement_effectif_siret">
+				<option value="oui" '.is_selected('enregistrement_effectif_siret',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('enregistrement_effectif_siret',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('enregistrement_effectif_siret',$answer_array,'').'>-</option>
+			</select>
+		</td>
 	</tr>
-//VALIDATION par l\'agence comptable : OUI / NON
+	<tr>
+		<td>Inscription du collecteur sur le portail NetEntreprises réalisée</td>
+		<td style="text-align:center;">'.get_answer_from_key('inscription_collecteur_netentreprises',$answer_array).'</td>
+		<td>
+			<select name="inscription_collecteur_netentreprises">
+				<option value="oui" '.is_selected('inscription_collecteur_netentreprises',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('inscription_collecteur_netentreprises',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('inscription_collecteur_netentreprises',$answer_array,'').'>-</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Inscription des SIRET du collecteur dans le dispositif déclaratif PASRAU sur le portail NetEntreprises réalisée</td>
+		<td style="text-align:center;">'.get_answer_from_key('inscription_siret_netentreprises',$answer_array).'</td>
+		<td>
+			<select name="inscription_siret_netentreprises">
+				<option value="oui" '.is_selected('inscription_siret_netentreprises',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('inscription_siret_netentreprises',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('inscription_siret_netentreprises',$answer_array,'').'>-</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Validation par l\'agence comptable du collecteur</td>
+		<td style="text-align:center;">'.get_answer_from_key('validation_agence_comptable',$answer_array).'</td>
+		<td>
+			<select name="validation_agence_comptable">
+				<option value="oui" '.is_selected('validation_agence_comptable',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('validation_agence_comptable',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('validation_agence_comptable',$answer_array,'').'>-</option>
+			</select>
+		</td>
+	</tr>
 	</table>
 
 
@@ -542,13 +599,38 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Nouvelle valeur</td>
 	</tr>
 
-// Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des versements aux bénéficiaires : OUI / NON
-// Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des prélèvements par la DGFIP de l\'impôt collecté : OUI / NON
-
-	<tr><td>Organisation de la cellule de cris et identification de ses membres de la cellule de crise</td>
-OUI/NON
+	<tr>
+		<td>Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des versements aux bénéficiaires </td>
+		<td style="text-align:center;">'.get_answer_from_key('mode_degrade_coeur_metier',$answer_array).'</td>
+		<td>
+			<select name="mode_degrade_coeur_metier">
+				<option value="oui" '.is_selected('mode_degrade_coeur_metier',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('mode_degrade_coeur_metier',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('mode_degrade_coeur_metier',$answer_array,'').'>-</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des prélèvements par la DGFIP de l\'impôt collecté</td>
+		<td style="text-align:center;">'.get_answer_from_key('mode_degrade_prelevement_impot_collecte',$answer_array).'</td>
+		<td>
+			<select name="mode_degrade_prelevement_impot_collecte">
+				<option value="oui" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'').'>-</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Organisation de la cellule de cris et identification de ses membres de la cellule de crise</td>
 		<td style="text-align:center;">'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'</td>
-		<td><input type="text" name="process_crise_membres_cellule_crise" value="'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="process_crise_membres_cellule_crise">
+				<option value="oui" '.is_selected('process_crise_membres_cellule_crise',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('process_crise_membres_cellule_crise',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('process_crise_membres_cellule_crise',$answer_array,'').'>-</option>
+			</select>
+		</td>
 	</tr>
 	</table>
 
