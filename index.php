@@ -151,7 +151,6 @@ function get_last_answer($targeted_login,$targeted_application){
 	global $answers_file;
 	$last_answers = [];
 	$last_answers_date = null;
-
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 0, ";");
 		array_shift($headers); //unstack composed_key
@@ -161,12 +160,13 @@ function get_last_answer($targeted_login,$targeted_application){
 
         while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
 			$index =0;
-			if (($data[2] == $targeted_login) && ($data[3]==$targeted_application)){
+			if (($data[1] == $targeted_login) && ($data[3]==$targeted_application)){
 				foreach ($headers as $h){
 					$last_answers[$h] = $data[$index+4];
 					$index++;
 				}
-				$last_answers_date = $data[1];
+				$last_answers_date = $data[2];
+print $last_answers_date;
 			}
         }   
         fclose($handle);
@@ -370,7 +370,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot3_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="text" name="lot3_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_Vparametrage_date_effet_prelevemeniSR',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
 		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
