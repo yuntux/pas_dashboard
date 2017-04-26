@@ -56,7 +56,7 @@ function main(){
 			if ($VOTE_END_DATE < strtotime('now')) {
 				vote_closed_view();
 			} else { 
-				if (isset($_POST['submit'])){
+				if (isset($_POST['send_vote'])){
 					add_vote();
 				}else{
 					if (isset($_POST['rebuild_answer_file'])){
@@ -73,7 +73,7 @@ function main(){
 			}
 		}
 	} else {
-		echo "Pas d'action, pas de hash ou utilsateur inconnu.";
+		ask_for_hash_view();
 	}
 }
 
@@ -166,7 +166,6 @@ function get_last_answer($targeted_login,$targeted_application){
 					$index++;
 				}
 				$last_answers_date = $data[2];
-print $last_answers_date;
 			}
         }   
         fclose($handle);
@@ -649,7 +648,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 </script>
 
 	<br>
-	<input type="submit" name="submit" style="width: 150px; height: 35px; display:block; margin:auto;" value="Valider"/>
+	<input type="submit" name="send_vote" style="width: 150px; height: 35px; display:block; margin:auto;" value="Valider"/>
 	</form>
 </body>
 </html>';
@@ -665,5 +664,17 @@ function admin_required_view(){
 function new_answers_file_build_view(){
 	echo 'L\'ancien fichier de réponse a été archivé et le nouveau généré.';
 }
+
+function ask_for_hash_view(){
+	echo '
+	<h1>Identification</h2>
+	<form  method="GET" action="'.$_URL.'">
+		Clé : <input type="text" name="hash"/>
+		<input type="hidden" name="action" value="vote"/>
+		<input type="submit" name="send_hash" value="Entrer sur le questionnaire" />
+	</form> 
+';;
+}
+
 main();
 ?>
