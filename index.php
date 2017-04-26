@@ -285,30 +285,30 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<tr>
 		<td>#1</td>
 		<td><input type="text" name="lot1_nom" value="'.get_answer_from_key('lot1_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_dev" id="lot1_date_fin_dev" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_entree_pilote" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_VSR" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot1_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot1_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#2</td>
 		<td><input type="text" name="lot2_nom" value="'.get_answer_from_key('lot2_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_dev" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_entree_pilote" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_VABF" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot2_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot2_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#3</td>
 		<td><input type="text" name="lot3_nom" value="'.get_answer_from_key('lot3_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_dev" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_entree_pilote" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_VABF" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -327,19 +327,19 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	</tr>
 	<tr><td>Date de mise en production du lot de gestion des flux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
-		<td><input type="date" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" class="widget_calendar" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date effective de l\'initialisation des taux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_init_taux',$answer_array).'</td>
-		<td><input type="date" name="date_init_taux" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="date_init_taux" class="widget_calendar" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date de mise en production du lot de prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_prelevement',$answer_array).'</td>
-		<td><input type="date" name="date_mep_prelevement" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="date_mep_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date effective du premier prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_premier_prelevement',$answer_array).'</td>
-		<td><input type="date" name="date_premier_prelevement" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="date_premier_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
@@ -477,7 +477,9 @@ OUI/NON
       elem.setAttribute("type", "date");
  
       if ( elem.type === "text" ) {
-         $("#lot1_date_fin_dev").datepicker(); 
+        $(".widget_calendar").datepicker({
+			dateFormat: "dd/mm/yy"
+		}); 
       }
    })();
 </script>
