@@ -44,7 +44,6 @@ $_USERS = array();
 function main(){
 	global $VOTE_END_DATE;
 	init_user_list();
-	//var_dump($_USERS);
 
 	if (isset($_GET['action'])  && get_session_hash() && exists_user()){
 		$admin_status = get_admin_status();
@@ -83,7 +82,7 @@ function init_user_list(){
     global $_USERS;
     global $_USERS_FILE;
     if (($handle = fopen($_USERS_FILE, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
             $hash = $data[0];
             $login = $data[1];
             $admin_bool = $data[2];
@@ -137,7 +136,7 @@ function rebuild_answers_file(){
 
 	$t=array("date", "login", "application", "primary_key");
 	foreach ($_POST as $key=>$value)
-		if ($t != "submit" && $t != "rebuild_answer_file")
+		if (($key != "submit") && ($key != "rebuild_answer_file"))
 			array_push($t,$key);
 
     if (($handle = fopen($answers_file, "w")) !== FALSE) {
@@ -154,13 +153,13 @@ function get_last_answer($targeted_login,$targeted_application){
 	$last_answers_date = null;
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
-		$headers = fgetcsv($handle, 1000, ";");
+		$headers = fgetcsv($handle, 0, ";");
 		array_shift($headers); //unstack composed_key
 		array_shift($headers); //unstack timestamp
 		array_shift($headers); //unstack login
 		array_shift($headers); //unstack application
 
-        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
 			$index =0;
 			if (($data[2] == $targeted_login) && ($data[3]==$targeted_application)){
 				foreach ($headers as $h){
@@ -186,7 +185,7 @@ function add_vote(){
 	$line_to_add = array(get_date().'-'.get_user_login().'-'.get_user_application(),get_date(), get_user_login(),get_user_application());
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
-		$headers = fgetcsv($handle, 1000, ";");
+		$headers = fgetcsv($handle, 0, ";");
 		array_shift($headers); //unstack composed_key
 		array_shift($headers); //unstack timestamp
 		array_shift($headers); //unstack login
@@ -218,7 +217,7 @@ function list_answers(){
     }
 }
 
-function display_form($last_record){
+function display_form($last_answer){
 	global $_URL;
 	$last_answer_date = $last_answer[0];
 	$answer_array = $last_answer[1];
@@ -238,7 +237,6 @@ function display_form($last_record){
 			return "";
 		}
 	}
-	
 echo '<html>
 <head>
 	<title>PAS - Données projet</title>
@@ -275,8 +273,6 @@ echo '<html>
 		<td>Nouvelle valeur</td>
 	</tr>
 
-//ECHAPPER via fput
-
 	<tr><td>Mode de déclaration</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_mode_declaration',$answer_array).'</td>
 		<td>
@@ -287,14 +283,14 @@ echo '<html>
 		</td>
 	</tr>
 	<tr><td>Type de produit mis en place</td>
-		<td style="text-align:center;">'.get_answer_from_key('perimetre_type_produit',$answer_array).'</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_type_produit',$answer_array).'<br>'.get_answer_from_key('perimetre_nom_editeur',$answer_array).' '.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'</td>
 		<td>
 			<select name="perimetre_type_produit">
 				<option value="pgi" '.is_selected('perimetre_type_produit',$answer_array,'pgi').'>Progiciel du marché</option>
 				<option value="interne" '.is_selected('perimetre_type_produit',$answer_array,'interne').'>Produit développé en interne</option>
 			</select>
 			<br>Si c\'est un produit du marché, précisez l\'éditeur :<br>
-			<select name="perimetre_nom_editeur_liste">
+			<select name="perimetre_nom_editeur">
 				<option value="sopra" '.is_selected('perimetre_nom_editeur',$answer_array,'sopra').'>Sopra</option>
 				<option value="sap" '.is_selected('perimetre_nom_editeur',$answer_array,'sap').'>SAP</option>
 				<option value="gfi" '.is_selected('perimetre_nom_editeur',$answer_array,'gfi').'>GFI</option>
@@ -304,22 +300,23 @@ echo '<html>
 				<option value="berger-levrault" '.is_selected('perimetre_nom_editeur',$answer_array,'berger-levrault').'>Berger-Levrault</option>
 				<option value="cegid" '.is_selected('perimetre_nom_editeur',$answer_array,'cegid').'>Cegid</option>
 				<option value="ciril" '.is_selected('perimetre_nom_editeur',$answer_array,'ciril').'>Ciril</option>
+				<option value="" '.is_selected('perimetre_nom_editeur',$answer_array,'').'>-</option>
 			</select>
 			Autre, précisez : 
 			<input type="text" name="perimetre_nom_editeur_libre" value="'.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'" style="text-align:center;"/></td>
 		</td>
 	</tr>
 	<tr><td>Nombre de bénéficiaires</td>
-		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaires',$answer_array).'</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'</td>
 		<td><input type="number" name="perimetre_nb_beneficiaire" class="nbr" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
-		<td><input type="text" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Nombre d\'usagers dont le NIR est certifié</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
-		<td><input type="text" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 
 	<tr><td>Total des sommes versées sur l\'année (qui auraient été soumises au PAS au 1/1/2018)</td>
@@ -361,7 +358,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot2_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot2_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="text" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot2_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
 		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot2_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot2_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
@@ -372,7 +369,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot3_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_Vparametrage_date_effet_prelevemeniSR',$answer_array).'" style="text-align:center;"/></td>
 		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
@@ -383,7 +380,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot4_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot4_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot4_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot4_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="text" name="lot4_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot4_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
 		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot4_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot4_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot4_nb_anomalies_total" value="'.get_answer_from_key('lot4_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
@@ -394,7 +391,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot5_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot5_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot5_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot5_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="text" name="lot5_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot5_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
 		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot5_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot5_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot5_nb_anomalies_total" value="'.get_answer_from_key('lot5_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
@@ -408,7 +405,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Nouvelle valeur</td>
 	</tr>
 	<tr><td>Déclaration de conformité réalisée auprès de la CNIL</td>
-		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
+		<td style="text-align:center;">'.get_answer_from_key('declaration_cnil',$answer_array).'</td>
 		<td>
 			<select name="declaration_cnil">
 				<option value="oui" '.is_selected('declaration_cnil',$answer_array,'oui').'>OUI</option>
@@ -503,7 +500,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	</tr>
 	<tr><td>Période de correction</td>
 		<td>
-			<select name="periode_corrections_bool">
+			<select name="periode_correction_bool">
 				<option value="oui" '.is_selected('periode_correction_bool',$answer_array,'oui').'>OUI</option>
 				<option value="non" '.is_selected('periode_correction_bool',$answer_array,'non').'>NON</option>
 				<option value="" '.is_selected('periode_correction_bool',$answer_array,'').'>-</option>
@@ -515,10 +512,10 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 
 	<tr><td>Possibilité de paramétrer une date d\'activation du prélèvement</td>
 		<td>
-			<select name="periode_paiement_blanc_bool">
-				<option value="oui" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'oui').'>OUI</option>
-				<option value="non" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'non').'>NON</option>
-				<option value="" '.is_selected('process_crise_desactiver_prelevement',$answer_array,'').'>-</option>
+			<select name="parametrage_date_effet_prelevement">
+				<option value="oui" '.is_selected('parametrage_date_effet_prelevement',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('parametrage_date_effet_prelevement',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('parametrage_date_effet_prelevement',$answer_array,'').'>-</option>
 			</select>
 		</td>
 	</tr>
