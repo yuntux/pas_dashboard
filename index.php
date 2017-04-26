@@ -11,12 +11,49 @@ header('Content-Type: text/html; charset=utf-8');
 $answers_file = "private/reponses.csv";
 $_USERS_FILE = "private/collecteurs.csv";
 date_default_timezone_set('Europe/Paris');
-$VOTE_END_DATE = strtotime('01/01/2018');
+$VOTE_END_DATE = strtotime('2018-01-01 12:00:00');
 $VOTE_END_DATE_STRING = date('d/m/Y à  H\hi',$VOTE_END_DATE);
 $_URL = "https://www.dumaine.me/www/pas_dashboard/index.php";
 
 $_USERS = array();
 
+/***************** MAIN ENTRY POINT / CONTROLER *****************/
+function main(){
+	global $VOTE_END_DATE;
+	init_user_list();
+	//var_dump($_USERS);
+
+	if (isset($_GET['action'])  && get_session_hash() && exists_user()){
+		$admin_status = get_admin_status();
+		if ($_GET['action']=='list_answers')
+			if ($admin_status==True)
+				list_answers();
+			else
+				admin_required_view();
+		if ($_GET['action']=='vote'){
+			if ($VOTE_END_DATE < strtotime('now')) {
+				vote_closed_view();
+			} else { 
+				if (isset($_POST['submit'])){
+					add_vote();
+				}else{
+					if (isset($_POST['rebuild_answer_file'])){
+						if ($admin_status==True)
+							 rebuild_answers_file();
+						else
+							admin_required_view();
+					}
+					else {
+						$last_record = get_last_answer(get_user_login(),get_user_application());
+						display_form($last_record);
+					}
+				}
+			}
+		}
+	} else {
+		echo "Pas d'action, pas de hash ou utilsateur inconnu.";
+	}
+}
 
 /***************** MODEL *****************/
 function init_user_list(){
@@ -32,7 +69,8 @@ function init_user_list(){
 			else
 				$admin_bool=False;
             $name = $data[3];
-			$temp=array($login,$admin_bool,$name);
+            $application = $data[4];
+			$temp=array($login,$admin_bool,$name,$application);
             $_USERS[$hash]=$temp;
         }   
         fclose($handle);
@@ -54,6 +92,10 @@ function get_user_name(){
 	global $_USERS;
 	return $_USERS[get_session_hash()][2];
 }
+function get_user_application(){
+	global $_USERS;
+	return $_USERS[get_session_hash()][3];
+}
 
 function get_session_hash(){
 	if (isset($_GET['hash']))
@@ -66,31 +108,43 @@ function get_session_hash(){
 }
 
 
-function list_headers(){
-	$t="";
+function rebuild_answers_file(){
+	global $answers_file;
+	rename($answers_file, $answers_file.'_'.get_date());
+
+	$t=array("date", "login", "application", "primary_key");
 	foreach ($_POST as $key=>$value)
-		$t.=$key.";";
-	print $t;
+		if ($t != "submit" && $t != "rebuild_answer_file")
+			array_push($t,$key);
+
+    if (($handle = fopen($answers_file, "w")) !== FALSE) {
+		fputcsv($handle, $t,";");
+        fclose($handle);
+		new_answers_file_build_view();
+	}
+
 }
 
-function get_last_answer($targeted_login){
+function get_last_answer($targeted_login,$targeted_application){
 	global $answers_file;
 	$last_answers = [];
 	$last_answers_date = null;
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 1000, ";");
+		array_shift($headers); //unstack composed_key
 		array_shift($headers); //unstack timestamp
 		array_shift($headers); //unstack login
+		array_shift($headers); //unstack application
 
         while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
 			$index =0;
-			if ($data[1] == $targeted_login){
+			if (($data[2] == $targeted_login) && ($data[3]==$targeted_application)){
 				foreach ($headers as $h){
-					$last_answers[$h] = $data[$index+2];
+					$last_answers[$h] = $data[$index+4];
 					$index++;
 				}
-				$last_answers_date = $data[0];
+				$last_answers_date = $data[1];
 			}
         }   
         fclose($handle);
@@ -99,14 +153,21 @@ function get_last_answer($targeted_login){
 }
 
 
+function get_date(){
+	return date("dMY_His");
+}
+
+
 function add_vote(){
 	global $answers_file;
-	$line_to_add = array(date("d/M/Y H:i:s "), get_user_login());
+	$line_to_add = array(get_date().'-'.get_user_login().'-'.get_user_application(),get_date(), get_user_login(),get_user_application());
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 1000, ";");
+		array_shift($headers); //unstack composed_key
 		array_shift($headers); //unstack timestamp
 		array_shift($headers); //unstack login
+		array_shift($headers); //unstack application
 		foreach ($headers as $h){
 			if (array_key_exists($h, $_POST)){
 				array_push($line_to_add, $_POST[$h]);
@@ -121,32 +182,7 @@ function add_vote(){
     }
 }
 
-/***************** MAIN ENTRY POINT / CONTROLER *****************/
-init_user_list();
-//var_dump($_USERS);
 
-if (isset($_GET['action'])  && get_session_hash() && exists_user()){
-	$admin_status = get_admin_status();
-	if ($_GET['action']=='list_answers')
-		if ($admin_status==True)
-			list_answers();
-		else
-			admin_required_view();
-	if ($_GET['action']=='vote'){
-		if ($VOTE_END_DATE < strtotime('now')) {
-			vote_closed_view();
-		} else { 
-			if (isset($_POST['submit'])){
-				add_vote();
-			}else{
-				$last_answer = get_last_answer(get_user_login());
-				display_form($last_answer);
-			}
-		}
-	}
-} else {
-	echo "Pas d'action, pas de hash ou utilsateur inconnu.";
-}
 
 /***************** VIEW *****************/
 
@@ -159,7 +195,7 @@ function list_answers(){
     }
 }
 
-function display_form($last_answer){
+function display_form($last_record){
 	global $_URL;
 	$last_answer_date = $last_answer[0];
 	$answer_array = $last_answer[1];
@@ -176,6 +212,7 @@ echo '<html>
 <head>
 	<title>PAS - Données projet</title>
 	<meta charset="UTF-8" />
+    <link href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
 </head>
 <body>
 ';
@@ -183,21 +220,18 @@ echo '<html>
 
 	if (get_admin_status()==True) {
 		echo '<br><br><b>Menu administrateur :</b>
-		<br><a href="'.$_URL.'?action=list_answerss&hash='.get_session_hash().'">Voir les réponses</a>
+		<br><form  method="POST" action="'.$_URL.'?action=list_answers&hash='.get_session_hash().'"><input type="submit" name="k" value="Voir les réponses" /></form>
+		<form name="world" id="world" method="POST" action="'.$_URL.'?hash='.get_session_hash().'&action=vote">
+		<input type="submit" name="rebuild_answer_file" value="Regénérer le fichier de réponses"/>
 		<br><br>';
 	}
 
 	echo '
-	<form name="world" id="world" method="POST" action="'.$_URL.'?hash='.get_session_hash().'&action=vote">
-<script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
-<script>
-    webshims.setOptions("forms-ext", {types: "date"});
-webshims.polyfill("forms forms-ext");
-</script>
 
 	<h1>Prélèvement à la source - Collecte de données projet</h1>
 	Organisme : '.get_user_name().' <br>
-	Dernière réponse : '.$last_answer_date.' 
+	Application : '.get_user_application().' <br>
+	Date de la dernière réponse : '.$last_answer_date.' 
 
 NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les date effectives.
 
@@ -251,7 +285,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<tr>
 		<td>#1</td>
 		<td><input type="text" name="lot1_nom" value="'.get_answer_from_key('lot1_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_dev" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="date" name="lot1_date_fin_dev" id="lot1_date_fin_dev" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot1_date_entree_pilote" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot1_date_fin_VABF" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="date" name="lot1_date_fin_VSR" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
@@ -435,6 +469,18 @@ OUI/NON
 	</tr>
 -->
 	</table>
+<script src="jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script>
+   (function() {
+      var elem = document.createElement("input");
+      elem.setAttribute("type", "date");
+ 
+      if ( elem.type === "text" ) {
+         $("#lot1_date_fin_dev").datepicker(); 
+      }
+   })();
+</script>
 
 	<br>
 	<input type="submit" name="submit" style="width: 150px; height: 35px; display:block; margin:auto;" value="Valider"/>
@@ -450,4 +496,8 @@ function admin_required_view(){
 	echo 'Droits administrateur requis. Tu n\'as pas de droits  administrateur '.get_user_name().'.';
 }
 
+function new_answers_file_build_view(){
+	echo 'L\'ancien fichier de réponse a été archivé et le nouveau généré.';
+}
+main();
 ?>
