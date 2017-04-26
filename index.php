@@ -275,9 +275,8 @@ echo '<html>
 		<td>Nouvelle valeur</td>
 	</tr>
 
-// PRODUIT MAISON OU PAS<br>
-// Si éditeur, quel éditeur<br>
 //ECHAPPER via fput
+
 	<tr><td>Mode de déclaration</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_mode_declaration',$answer_array).'</td>
 		<td>
@@ -294,19 +293,33 @@ echo '<html>
 				<option value="pgi" '.is_selected('perimetre_type_produit',$answer_array,'pgi').'>Progiciel du marché</option>
 				<option value="interne" '.is_selected('perimetre_type_produit',$answer_array,'interne').'>Produit développé en interne</option>
 			</select>
+			<br>Si c\'est un produit du marché, précisez l\'éditeur :<br>
+			<select name="perimetre_nom_editeur_liste">
+				<option value="sopra" '.is_selected('perimetre_nom_editeur',$answer_array,'sopra').'>Sopra</option>
+				<option value="sap" '.is_selected('perimetre_nom_editeur',$answer_array,'sap').'>SAP</option>
+				<option value="gfi" '.is_selected('perimetre_nom_editeur',$answer_array,'gfi').'>GFI</option>
+				<option value="adp" '.is_selected('perimetre_nom_editeur',$answer_array,'adp').'>ADP</option>
+				<option value="sage" '.is_selected('perimetre_nom_editeur',$answer_array,'sage').'>Sage</option>
+				<option value="meta4" '.is_selected('perimetre_nom_editeur',$answer_array,'meta4').'>Meta4</option>
+				<option value="berger-levrault" '.is_selected('perimetre_nom_editeur',$answer_array,'berger-levrault').'>Berger-Levrault</option>
+				<option value="cegid" '.is_selected('perimetre_nom_editeur',$answer_array,'cegid').'>Cegid</option>
+				<option value="ciril" '.is_selected('perimetre_nom_editeur',$answer_array,'ciril').'>Ciril</option>
+			</select>
+			Autre, précisez : 
+			<input type="text" name="perimetre_nom_editeur_libre" value="'.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'" style="text-align:center;"/></td>
 		</td>
 	</tr>
 	<tr><td>Nombre de bénéficiaires</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaires',$answer_array).'</td>
-		<td><input type="number" name="perimetre_nb_beneficiaire" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="perimetre_nb_beneficiaire" class="nbr" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
-		<td><input type="date" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Nombre d\'usagers dont le NIR est certifié</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
-		<td><input type="date" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 
 	<tr><td>Total des sommes versées sur l\'année (qui auraient été soumises au PAS au 1/1/2018)</td>
@@ -317,14 +330,14 @@ echo '<html>
 
 	<h2>Avancement dans les jalons projet</h2>
 	<table>
-	<tr>
+	<tr style="text-align:center;">
 		<td>ID</td>
 		<td>Nom du lot</td>
 		<td>Date de fin de développements et de la recette unitaire (effective ou prévisionnelle)</td>
 		<td>Date d\'entrée en "pilote" (effective ou prévisionnelle)</td>
 		<td>Date de fin de VABF (effective ou prévisionnelle)</td>
 		<td>Date de fin de VSR (effective ou prévisionnelle)</td>
-//AJOUTER UNE COLONNE NOIR / SEPARATEUR
+		<td style="background-color:black;">-</td>
 		<td>Nombre d\'anomalies bloquantes ouvertes à date</td>
 		<td>Nombre d\'anomalies total ouvertes à date</td>
 	</tr>
@@ -334,32 +347,57 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<tr>
 		<td>#1</td>
 		<td><input type="text" name="lot1_nom" value="'.get_answer_from_key('lot1_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot1_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot1_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot1_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot1_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot1_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
+		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot1_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot1_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#2</td>
 		<td><input type="text" name="lot2_nom" value="'.get_answer_from_key('lot2_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot2_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot2_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot2_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot2_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr>
 		<td>#3</td>
 		<td><input type="text" name="lot3_nom" value="'.get_answer_from_key('lot3_nom',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
-		<td><input type="date" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td style="background-color:black;">-</td>
 		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr>
+		<td>#4</td>
+		<td><input type="text" name="lot4_nom" value="'.get_answer_from_key('lot4_nom',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot4_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot4_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot4_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot4_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot4_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td style="background-color:black;">-</td>
+		<td><input type="number" name="lot4_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot4_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot4_nb_anomalies_total" value="'.get_answer_from_key('lot4_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
+	</tr>
+	<tr>
+		<td>#5</td>
+		<td><input type="text" name="lot5_nom" value="'.get_answer_from_key('lot5_nom',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot5_date_fin_dev" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_dev',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot5_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot5_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot5_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="lot5_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
+		<td style="background-color:black;">-</td>
+		<td><input type="number" name="lot5_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot5_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="number" name="lot5_nb_anomalies_total" value="'.get_answer_from_key('lot5_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
@@ -371,24 +409,29 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	</tr>
 	<tr><td>Déclaration de conformité réalisée auprès de la CNIL</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
-// TYPE : OUI / NON
-		<td><input type="date" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
+		<td>
+			<select name="declaration_cnil">
+				<option value="oui" '.is_selected('declaration_cnil',$answer_array,'oui').'>OUI</option>
+				<option value="non" '.is_selected('declaration_cnil',$answer_array,'non').'>NON</option>
+				<option value="" '.is_selected('declaration_cnil',$answer_array,'').'>-</option>
+			</select>
+		</td>
 	</tr>
 	<tr><td>Date de mise en production du lot de gestion des flux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
-		<td><input type="date" class="widget_calendar" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" class="widget_calendar" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date effective de l\'initialisation des taux (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_init_taux',$answer_array).'</td>
-		<td><input type="date" name="date_init_taux" class="widget_calendar" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="date_init_taux" class="widget_calendar" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date de mise en production du lot de prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_prelevement',$answer_array).'</td>
-		<td><input type="date" name="date_mep_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="date_mep_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	<tr><td>Date effective du premier prélèvement (réelle ou prévisionnelle)</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_premier_prelevement',$answer_array).'</td>
-		<td><input type="date" name="date_premier_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="date_premier_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
@@ -399,14 +442,21 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Budget SI MOE prévu pour le projet (interne et externe, toutes phases confondues)</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_total',$answer_array).'</td>
-		<td><input type="number" name="budget_total" value="'.get_answer_from_key('budgte_total',$answer_array).'" style="text-align:center;"/></td>
+	<tr><td>Budget SI MOE interne (exprimé en jh) prévu pour le projet</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_total_interne',$answer_array).'jh</td>
+		<td><input type="number" name="budget_total_interne" value="'.get_answer_from_key('budget_total_interne',$answer_array).'" style="text-align:center;"/> jh</td>
 	</tr>
-//Dissocier interne en jh et externe en euros
-	<tr><td>Budget SI MOE actuellement engagé (interne et externe, toutes phases confondues)</td>
-		<td style="text-align:center;">'.get_answer_from_key('budget_engage',$answer_array).'</td>
-		<td><input type="number" name="budget_engage" value="'.get_answer_from_key('budget_engage',$answer_array).'" style="text-align:center;"/></td>
+	<tr><td>Budget SI MOE externe (exprimé en euros, HT) prévu pour le projet</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_total_externe',$answer_array).'€</td>
+		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
+	</tr>
+	<tr><td>Budget SI MOE interne (exprimé en jh) dépensé/engagé</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_engage_interne',$answer_array).'jh</td>
+		<td><input type="number" name="budget_engage_interne" value="'.get_answer_from_key('budget_engage_interne',$answer_array).'" style="text-align:center;"/> jh</td>
+	</tr>
+	<tr><td>Budget SI MOE externe (exprimé en euros, HT) dépensé/engagé</td>
+		<td style="text-align:center;">'.get_answer_from_key('budget_engage_externe',$answer_array).'€</td>
+		<td><input type="number" name="budget_engage_externe" value="'.get_answer_from_key('budget_engage_externe',$answer_array).'" style="text-align:center;"/>€</td>
 	</tr>
 	</table>
 
@@ -454,7 +504,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<tr><td>Possibilité de paramétrer une date d\'activation du prélèvement</td>
 // OUI / NON
 		<td style="text-align:center;">'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'</td>
-		<td><input type="date" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="process_crise_desactiver_prelevement" value="'.get_answer_from_key('process_crise_desactiver_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 
 	</table>
@@ -472,13 +522,13 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 
 	<tr><td>Date de création des SIRET à l\'INSEE</td>
 		<td style="text-align:center;">'.get_answer_from_key('creation_siret_insee',$answer_array).'</td>
-		<td><input type="date" name="creation_siret_insee" value="'.get_answer_from_key('creation_siret_insee',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="creation_siret_insee" value="'.get_answer_from_key('creation_siret_insee',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 // INSCRIPTION sur netentreprise : OUI / NON
 // INSCIRPTION de tous les SIRET dans la déclaration PASRAU/DSN : OUI / NON
 	<tr><td>Date d\'inscription sur NetEntreprise</td>
 		<td style="text-align:center;">'.get_answer_from_key('inscription_net_entreprise',$answer_array).'</td>
-		<td><input type="date" name="inscription_net_entreprise" value="'.get_answer_from_key('incription_net_entreprise',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="inscription_net_entreprise" value="'.get_answer_from_key('incription_net_entreprise',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 //VALIDATION par l\'agence comptable : OUI / NON
 	</table>
@@ -498,7 +548,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 	<tr><td>Organisation de la cellule de cris et identification de ses membres de la cellule de crise</td>
 OUI/NON
 		<td style="text-align:center;">'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'</td>
-		<td><input type="date" name="process_crise_membres_cellule_crise" value="'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'" style="text-align:center;"/></td>
+		<td><input type="text" name="process_crise_membres_cellule_crise" value="'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
 
@@ -506,15 +556,16 @@ OUI/NON
 <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script>
    (function() {
-      var elem = document.createElement("input");
-      elem.setAttribute("type", "date");
- 
-      if ( elem.type === "text" ) {
         $(".widget_calendar").datepicker({
 			dateFormat: "dd/mm/yy"
 		}); 
-      }
    })();
+
+/*
+   (function() {
+        $(".nbr").number(true, 2);
+   })();
+*/
 </script>
 
 	<br>
