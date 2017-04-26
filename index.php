@@ -1,4 +1,27 @@
 <?php
+
+/*
+PAS Dashboard
+Copyright [2017-2018] Aurélien DUMAINE (aurelien@dumaine.me) / Fontaine Consultants
+
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
 $_TEST_MOD=0;
 
 if ($_TEST_MOD==1){
@@ -187,7 +210,7 @@ function add_vote(){
 /***************** VIEW *****************/
 
 function list_answers(){
-    global $answers_file;
+	global $answers_file;
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
         $r = fread($handle,filesize($answers_file));
 		echo $r;
@@ -207,12 +230,21 @@ function display_form($last_record){
 		else
 			return '';
 	}
+
+	function is_selected($field_name,$answer_array,$target){
+		if(get_answer_from_key($field_name,$answer_array) == $target){
+			return 'selected="selected"';
+		}else{
+			return "";
+		}
+	}
 	
 echo '<html>
 <head>
 	<title>PAS - Données projet</title>
 	<meta charset="UTF-8" />
     <link href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+	<meta name="author" content="Aurélien DUMAINE (aurelien@dumaine.me) / Fontaine Consultants">
 </head>
 <body>
 ';
@@ -233,7 +265,7 @@ echo '<html>
 	Application : '.get_user_application().' <br>
 	Date de la dernière réponse : '.$last_answer_date.' 
 
-NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les date effectives.
+<br><br>NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les date effectives.
 
 	<br><br>
 	<h2>Périmètre</h2>
@@ -245,8 +277,25 @@ NOTICE : les dates renseignées sont prévisionnéelles si elles osnt situées d
 
 // PRODUIT MAISON OU PAS<br>
 // Si éditeur, quel éditeur<br>
-// CIRCUIT : DSN ou PASRAU<br>
 //ECHAPPER via fput
+	<tr><td>Mode de déclaration</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_mode_declaration',$answer_array).'</td>
+		<td>
+			<select name="perimetre_mode_declaration">
+				<option value="pasrau" '.is_selected('perimetre_mode_declaration',$answer_array,'pasrau').'>PASRAU</option>
+				<option value="dsn" '.is_selected('perimetre_mode_declaration',$answer_array,'dsn').'>DSN</option>
+			</select>
+		</td>
+	</tr>
+	<tr><td>Type de produit mis en place</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_type_produit',$answer_array).'</td>
+		<td>
+			<select name="perimetre_type_produit">
+				<option value="pgi" '.is_selected('perimetre_type_produit',$answer_array,'pgi').'>Progiciel du marché</option>
+				<option value="interne" '.is_selected('perimetre_type_produit',$answer_array,'interne').'>Produit développé en interne</option>
+			</select>
+		</td>
+	</tr>
 	<tr><td>Nombre de bénéficiaires</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaires',$answer_array).'</td>
 		<td><input type="number" name="perimetre_nb_beneficiaire" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
@@ -453,22 +502,6 @@ OUI/NON
 	</tr>
 	</table>
 
-
-
-	<br><br>
-	<h2>Données d\'identification</h2>
-	<table>
-	<tr style="text-align:center;"><td>Questions</td>
-		<td>Valeur précédente</td>
-		<td>Nouvelle valeur</td>
-	</tr>
-<!--
-	<tr><td>Nombre d\'usagers</td>
-		<td style="text-align:center;">'.get_answer_from_key('identification_nb_usagers',$answer_array).'</td>
-		<td><input type="date" name="identification_nb_usagers" value="'.get_answer_from_key('identification_nb_usagers',$answer_array).'" style="text-align:center;"/></td>
-	</tr>
--->
-	</table>
 <script src="jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
 <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script>
