@@ -134,7 +134,7 @@ function rebuild_answers_file(){
 	global $answers_file;
 	rename($answers_file, $answers_file.'_'.get_date());
 
-	$t=array("date", "login", "application", "primary_key");
+	$t=array("primary_key", "login", "date", "application");
 	foreach ($_POST as $key=>$value)
 		if (($key != "submit") && ($key != "rebuild_answer_file"))
 			array_push($t,$key);
@@ -176,13 +176,14 @@ function get_last_answer($targeted_login,$targeted_application){
 
 
 function get_date(){
-	return date("dMY_His");
+	return date("dmY_His");
 }
 
 
 function add_vote(){
 	global $answers_file;
-	$line_to_add = array(get_date().'-'.get_user_login().'-'.get_user_application(),get_date(), get_user_login(),get_user_application());
+	$pkey=get_date().'-'.get_user_login().'-'.get_user_application();
+	$line_to_add = array($pkey,get_user_login(),get_date(),get_user_application());
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 0, ";");
@@ -439,11 +440,11 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td>Dépensé/engagé</td>
 		<td>Total</td>
 	</tr>
-	<tr><td>Budget SI MOE interne (exprimé en jh) prévu pour le projet</td>
+	<tr><td>Budget SI MOE interne (exprimé en jh)</td>
 		<td><input type="number" name="budget_engage_interne" value="'.get_answer_from_key('budget_engage_interne',$answer_array).'" style="text-align:center;"/> jh</td>
 		<td><input type="number" name="budget_total_interne" value="'.get_answer_from_key('budget_total_interne',$answer_array).'" style="text-align:center;"/> jh</td>
 	</tr>
-	<tr><td>Budget SI MOE externe (exprimé en euros, HT) prévu pour le projet</td>
+	<tr><td>Budget SI MOE externe (exprimé en euros, HT)</td>
 		<td><input type="number" name="budget_engage_externe" value="'.get_answer_from_key('budget_engage_externe',$answer_array).'" style="text-align:center;"/>€</td>
 		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
 	</tr>
