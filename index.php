@@ -241,8 +241,41 @@ echo '<html>
 <head>
 	<title>PAS - Données projet</title>
 	<meta charset="UTF-8" />
-    <link href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
 	<meta name="author" content="Aurélien DUMAINE (aurelien@dumaine.me) / Fontaine Consultants">
+    <link href="jquery-ui-1.12.1.custom/jquery-ui.min.css" rel="stylesheet" />
+<style>
+body {
+    background-color: #FAFAFA;
+	font-family: Arial,sans-serif;
+}
+
+h2 {
+	text-align:center;
+	color: #126f7f !important;
+	font-size: 1.6em !important;
+	background: #FAFAFA;
+	display: inline-block;
+	padding: 0 8px;
+	margin-top:-24px;"
+}
+
+.category {
+	backface-visibility: visible;
+	border-color: rgb(127, 195, 206);
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 25px;
+	margin-top: 25px;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding-bottom: 10px;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 10px;
+}
+
+</style>
+
 </head>
 <body>
 ';
@@ -266,6 +299,7 @@ echo '<html>
 <br><br>NOTICE : les dates renseignées sont prévisionnelles si elles sont situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les dates effectives.
 
 	<br><br>
+	<div class="category">
 	<h2>Périmètre</h2>
 	<table>
 	<tr style="text-align:center;"><td>Questions</td>
@@ -324,22 +358,25 @@ echo '<html>
 		<td><input type="number" name="perimetre_assiette" value="'.get_answer_from_key('perimetre_assiette',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
+	</div>
 
+	<div class="category">
 	<h2>Avancement dans les jalons projet</h2>
-	<table>
+<br>Si ce projet comporte plusieurs lots, merci de remplir le tableau suivant ce lotissement.
+<br><br>
+	<table style="border: 1px solid black;border: 1px solid black;">
 	<tr style="text-align:center;">
 		<td>ID</td>
 		<td>Nom du lot</td>
-		<td>Date de fin de développements et de la recette unitaire (effective ou prévisionnelle)</td>
-		<td>Date d\'entrée en "pilote" (effective ou prévisionnelle)</td>
-		<td>Date de fin de VABF (effective ou prévisionnelle)</td>
-		<td>Date de fin de VSR (effective ou prévisionnelle)</td>
-		<td style="background-color:black;">-</td>
+		<td>Date de fin de développements et de la recette unitaire</td>
+		<td>Date d\'entrée en "pilote"</td>
+		<td>Date de fin de VABF</td>
+		<td>Date de fin de VSR</td>
+	<td style="color:transparent">----------------</td>
 		<td>Nombre d\'anomalies bloquantes ouvertes à date</td>
 		<td>Nombre d\'anomalies total ouvertes à date</td>
 	</tr>
 
-Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant selon ce lotissement.
 
 	<tr>
 		<td>#1</td>
@@ -348,7 +385,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot1_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot1_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot1_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot1_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot1_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
-		<td style="background-color:black;">-</td>
+		<td></td>
 		<td><input type="number" name="lot1_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot1_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot1_nb_anomalies_total" value="'.get_answer_from_key('lot1_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -359,7 +396,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot2_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot2_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot2_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot2_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot2_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
-		<td style="background-color:black;">-</td>
+		<td></td>
 		<td><input type="number" name="lot2_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot2_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot2_nb_anomalies_total" value="'.get_answer_from_key('lot2_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -370,7 +407,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot3_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot3_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot3_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot3_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
-		<td style="background-color:black;">-</td>
+		<td></td>
 		<td><input type="number" name="lot3_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot3_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot3_nb_anomalies_total" value="'.get_answer_from_key('lot3_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -381,7 +418,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot4_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot4_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot4_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot4_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot4_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
-		<td style="background-color:black;">-</td>
+		<td></td>
 		<td><input type="number" name="lot4_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot4_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot4_nb_anomalies_total" value="'.get_answer_from_key('lot4_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -392,7 +429,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="text" name="lot5_date_entree_pilote" class="widget_calendar" value="'.get_answer_from_key('lot5_date_entree_pilote',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot5_date_fin_VABF" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VABF',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="text" name="lot5_date_fin_VSR" class="widget_calendar" value="'.get_answer_from_key('lot5_date_fin_VSR',$answer_array).'" style="text-align:center;"/></td>
-		<td style="background-color:black;">-</td>
+		<td></td>
 		<td><input type="number" name="lot5_nb_anomalies_bloquantes" value="'.get_answer_from_key('lot5_nb_anomalies_bloquantes',$answer_array).'" style="text-align:center;"/></td>
 		<td><input type="number" name="lot5_nb_anomalies_total" value="'.get_answer_from_key('lot5_nb_anomalies_total',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -414,25 +451,26 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 			</select>
 		</td>
 	</tr>
-	<tr><td>Date de mise en production du lot de gestion des flux (réelle ou prévisionnelle)</td>
+	<tr><td>Date de mise en production du lot de gestion des flux</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_flux',$answer_array).'</td>
 		<td><input type="text" class="widget_calendar" name="date_mep_flux" value="'.get_answer_from_key('date_mep_flux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date effective de l\'initialisation des taux (réelle ou prévisionnelle)</td>
+	<tr><td>Date effective de l\'initialisation des taux</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_init_taux',$answer_array).'</td>
 		<td><input type="text" name="date_init_taux" class="widget_calendar" value="'.get_answer_from_key('date_init_taux',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date de mise en production du lot de prélèvement (réelle ou prévisionnelle)</td>
+	<tr><td>Date de mise en production du lot de prélèvement</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_mep_prelevement',$answer_array).'</td>
 		<td><input type="text" name="date_mep_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_mep_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Date effective du premier prélèvement (réelle ou prévisionnelle)</td>
+	<tr><td>Date effective du premier prélèvement</td>
 		<td style="text-align:center;">'.get_answer_from_key('date_premier_prelevement',$answer_array).'</td>
 		<td><input type="text" name="date_premier_prelevement" class="widget_calendar" value="'.get_answer_from_key('date_premier_prelevement',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
+	</div>
 
-
+	<div class="category">
 	<h2>Éléments budgétaires</h2>
 	<table>
 	<tr style="text-align:center;"><td>Type de budget</td>
@@ -448,8 +486,10 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
 	</tr>
 	</table>
+	</div>
 
 
+	<div class="category">
 	<h2>Points ouverts</h2>
 	<table>
 	<tr style="text-align:center;"><td>Questions</td>
@@ -465,8 +505,9 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		<td><input type="number" name="nb_questions_techniques" value="'.get_answer_from_key('nb_questions_techniques',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 	</table>
+	</div>
 
-	<br><br>
+	<div class="category">
 	<h2>Suivi de pratiques de sécurisation des paiements</h2>
 	<table>
 	<tr style="text-align:center;">
@@ -519,11 +560,10 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 			</select>
 		</td>
 	</tr>
-
 	</table>
+	</div>
 
-
-	<br><br>
+	<div class="category">
 	<h2>Préparation du processus de prélèvement de l\'impôt collecté par la DGFiP</h2>
 	<table>
 	<tr style="text-align:center;"><td>Questions</td>
@@ -586,9 +626,9 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		</td>
 	</tr>
 	</table>
+	</div>
 
-
-	<br><br>
+	<div class="category">
 	<h2>Formalisation du processus de gestion de crise</h2>
 	<table>
 	<tr style="text-align:center;"><td>Questions</td>
@@ -630,6 +670,7 @@ Si lotissement du projet en plusieurs lots, merci de remplir le tableau suivant 
 		</td>
 	</tr>
 	</table>
+	</div>
 
 <script src="jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
 <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
