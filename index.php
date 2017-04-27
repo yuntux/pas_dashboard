@@ -382,7 +382,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 	<div class="category">
 	<h2>Avancement dans les jalons projet</h2>
 <br>Si ce projet comporte plusieurs lots, merci de remplir le tableau suivant ce lotissement.
-<br>Ne pas indiquer les projets SI connexes s'ils font l'objet d'une demande d\'information dédiée.
+<br>Ne pas indiquer les projets SI connexes s\'ils font l\'objet d\'une demande d\'information dédiée.
 
 <br><br>
 	<table style="border: 1px solid black;border: 1px solid black;text-align:center;align-content:center;">
