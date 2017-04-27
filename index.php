@@ -175,14 +175,18 @@ function get_last_answer($targeted_login,$targeted_application){
 
 
 function get_date(){
-	return date("dmY_His");
+	//return date("dmY_His");
+	return get_date_human_readable();
 }
 
+function get_date_human_readable(){
+	return date("d/m/Y_H:i:s");
+}
 
 function add_vote(){
 	global $answers_file;
 	$pkey=get_date().'-'.get_user_login().'-'.get_user_application();
-	$line_to_add = array($pkey,get_user_login(),get_date(),get_user_application());
+	$line_to_add = array($pkey,get_user_login(),get_date_human_readable(),get_user_application());
 
     if (($handle = fopen($answers_file, "r")) !== FALSE) {
 		$headers = fgetcsv($handle, 0, ";");
@@ -202,6 +206,7 @@ function add_vote(){
 		fputcsv($handle, $line_to_add,";");
         fclose($handle);
     }
+	record_ok_view();
 }
 
 
@@ -249,6 +254,9 @@ body {
 	font-family: Arial,sans-serif;
 }
 
+h1 {
+	color: #126f7f !important;
+}
 h2 {
 	text-align:center;
 	color: #126f7f !important;
@@ -296,8 +304,19 @@ h2 {
 	Application : '.get_user_application().' <br>
 	Date de la dernière réponse : '.$last_answer_date.' 
 
-<br><br>NOTICE : les dates renseignées sont prévisionnelles si elles sont situées dna sle futur par rapport à la date de remplissage du questionnaire. Si non ce sont les dates effectives.
+<br><br>
+<b>L\'objectif de ce formulaire est de permettre la collecte régulière de données de votre projet de mise en œuvre du prélèvement à la source.
+Les réponses apportées par les collecteurs constituent un élément factuel d\information supplémentaire pour le pilotage de la réforme et l\‘évaluation des risques projets des collecteurs.
+Chaque collecteur sera conduit à mettre à jour les données transmises à échéances régulières.
 
+<br><br>Les règles de remplissage sont les suivantes :
+<ul>
+<li/>Pour chaque indicateur, la dernière valeur saisie est pré-remplie.
+<li/>Laisser une zone blanche signifie que le collecteur n\'est pas en mesure de répondre à la question.
+<li/>Lorsqu\'une date est demandée, saisir soit la valeur effective (date passée), soit la valeur prévisionnelle à venir (lorsqu\'elle est connue) 
+</ul>
+
+</b>
 	<br><br>
 	<div class="category">
 	<h2>Périmètre</h2>
@@ -311,44 +330,44 @@ h2 {
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_mode_declaration',$answer_array).'</td>
 		<td>
 			<select name="perimetre_mode_declaration">
-				<option value="pasrau" '.is_selected('perimetre_mode_declaration',$answer_array,'pasrau').'>PASRAU</option>
-				<option value="dsn" '.is_selected('perimetre_mode_declaration',$answer_array,'dsn').'>DSN</option>
+				<option value="PASRAU" '.is_selected('perimetre_mode_declaration',$answer_array,'PASRAU').'>PASRAU</option>
+				<option value="DSN" '.is_selected('perimetre_mode_declaration',$answer_array,'DSN').'>DSN</option>
 			</select>
 		</td>
 	</tr>
-	<tr><td>Type de produit mis en place</td>
-		<td style="text-align:center;">'.get_answer_from_key('perimetre_type_produit',$answer_array).'<br>'.get_answer_from_key('perimetre_nom_editeur',$answer_array).' '.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'</td>
+	<tr><td>Origine du logiciel de gestion</td>
+		<td style="text-align:center;">'.get_answer_from_key('perimetre_type_produit',$answer_array).'<br>'.get_answer_from_key('perimetre_nom_editeur',$answer_array).'<br>'.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'</td>
 		<td>
 			<select name="perimetre_type_produit">
 				<option value="pgi" '.is_selected('perimetre_type_produit',$answer_array,'pgi').'>Progiciel du marché</option>
 				<option value="interne" '.is_selected('perimetre_type_produit',$answer_array,'interne').'>Produit développé en interne</option>
 			</select>
-			<br>Si c\'est un produit du marché, précisez l\'éditeur :<br>
+			<br>Si c\'est un produit du marché, précisez l\'éditeur : 
 			<select name="perimetre_nom_editeur">
-				<option value="sopra" '.is_selected('perimetre_nom_editeur',$answer_array,'sopra').'>Sopra</option>
-				<option value="sap" '.is_selected('perimetre_nom_editeur',$answer_array,'sap').'>SAP</option>
-				<option value="gfi" '.is_selected('perimetre_nom_editeur',$answer_array,'gfi').'>GFI</option>
-				<option value="adp" '.is_selected('perimetre_nom_editeur',$answer_array,'adp').'>ADP</option>
-				<option value="sage" '.is_selected('perimetre_nom_editeur',$answer_array,'sage').'>Sage</option>
-				<option value="meta4" '.is_selected('perimetre_nom_editeur',$answer_array,'meta4').'>Meta4</option>
-				<option value="berger-levrault" '.is_selected('perimetre_nom_editeur',$answer_array,'berger-levrault').'>Berger-Levrault</option>
-				<option value="cegid" '.is_selected('perimetre_nom_editeur',$answer_array,'cegid').'>Cegid</option>
-				<option value="ciril" '.is_selected('perimetre_nom_editeur',$answer_array,'ciril').'>Ciril</option>
+				<option value="Sopra" '.is_selected('perimetre_nom_editeur',$answer_array,'Sopra').'>Sopra</option>
+				<option value="SAP" '.is_selected('perimetre_nom_editeur',$answer_array,'SAP').'>SAP</option>
+				<option value="GFI" '.is_selected('perimetre_nom_editeur',$answer_array,'GFI').'>GFI</option>
+				<option value="ADP" '.is_selected('perimetre_nom_editeur',$answer_array,'ADP').'>ADP</option>
+				<option value="Sage" '.is_selected('perimetre_nom_editeur',$answer_array,'Sage').'>Sage</option>
+				<option value="Meta4" '.is_selected('perimetre_nom_editeur',$answer_array,'Meta4').'>Meta4</option>
+				<option value="Berger-Levrault" '.is_selected('perimetre_nom_editeur',$answer_array,'Berger-Levrault').'>Berger-Levrault</option>
+				<option value="Cegid" '.is_selected('perimetre_nom_editeur',$answer_array,'Cegid').'>Cegid</option>
+				<option value="Ciril" '.is_selected('perimetre_nom_editeur',$answer_array,'Ciril').'>Ciril</option>
 				<option value="" '.is_selected('perimetre_nom_editeur',$answer_array,'').'>-</option>
 			</select>
-			Autre, précisez : 
+			<br>Autre, précisez : 
 			<input type="text" name="perimetre_nom_editeur_libre" value="'.get_answer_from_key('perimetre_nom_editeur_libre',$answer_array).'" style="text-align:center;"/></td>
 		</td>
 	</tr>
-	<tr><td>Nombre de bénéficiaires</td>
+	<tr><td>Nombre de bénéficiaires gérés</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'</td>
 		<td><input type="number" name="perimetre_nb_beneficiaire" class="nbr" value="'.get_answer_from_key('perimetre_nb_beneficiaire',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Nombre d\'usagers dont le NIR est connu</td>
+	<tr><td>Nombre de bénéficiaires dont le NIR est connu</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'</td>
 		<td><input type="number" name="identification_nb_nir_connus" value="'.get_answer_from_key('identification_nb_nir_connus',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Nombre d\'usagers dont le NIR est certifié</td>
+	<tr><td>Nombre de bénéficiaires dont le NIR est certifié</td>
 		<td style="text-align:center;">'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'</td>
 		<td><input type="number" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -363,9 +382,11 @@ h2 {
 	<div class="category">
 	<h2>Avancement dans les jalons projet</h2>
 <br>Si ce projet comporte plusieurs lots, merci de remplir le tableau suivant ce lotissement.
+<br>Ne pas indiquer les projets SI connexes s'ils font l'objet d'une demande d\'information dédiée.
+
 <br><br>
-	<table style="border: 1px solid black;border: 1px solid black;">
-	<tr style="text-align:center;">
+	<table style="border: 1px solid black;border: 1px solid black;text-align:center;align-content:center;">
+	<tr style="text-align:center;align-content:center;">
 		<td>ID</td>
 		<td>Nom du lot</td>
 		<td>Date de fin de développements et de la recette unitaire</td>
@@ -374,7 +395,7 @@ h2 {
 		<td>Date de fin de VSR</td>
 	<td style="color:transparent">----------------</td>
 		<td>Nombre d\'anomalies bloquantes ouvertes à date</td>
-		<td>Nombre d\'anomalies total ouvertes à date</td>
+		<td>Nombre total d\'anomalies ouvertes à date</td>
 	</tr>
 
 
@@ -706,11 +727,15 @@ function new_answers_file_build_view(){
 	echo 'L\'ancien fichier de réponse a été archivé et le nouveau généré.';
 }
 
+function record_ok_view(){
+	echo "Vos données sont enregistrées, merci.";
+}
+
 function ask_for_hash_view(){
 	echo '
 	<h1>Identification</h2>
 	<form  method="GET" action="'.$_URL.'">
-		Clé : <input type="text" name="hash"/>
+		Numéro de collecteur/SI : <input type="text" name="hash"/>
 		<input type="hidden" name="action" value="vote"/>
 		<input type="submit" name="send_hash" value="Entrer sur le questionnaire" />
 	</form> 
