@@ -305,8 +305,8 @@ h2 {
 	Date de la dernière réponse : '.$last_answer_date.' 
 
 <br><br>
-<b>L\'objectif de ce formulaire est de permettre la collecte régulière de données de votre projet de mise en œuvre du prélèvement à la source.
-Les réponses apportées par les collecteurs constituent un élément factuel d\information supplémentaire pour le pilotage de la réforme et l\‘évaluation des risques projets des collecteurs.
+<b>L\'objectif de ce formulaire est de permettre la collecte de données projet relatives à la mise en œuvre du prélèvement à la source.
+Les réponses apportées par les collecteurs constituent un élément factuel d\'information supplémentaire pour le pilotage de la réforme et l\'évaluation des risques projets des collecteurs.
 Chaque collecteur sera conduit à mettre à jour les données transmises à échéances régulières.
 
 <br><br>Les règles de remplissage sont les suivantes :
