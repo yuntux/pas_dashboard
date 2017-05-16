@@ -82,6 +82,7 @@ function init_user_list(){
     global $_USERS;
     global $_USERS_FILE;
     if (($handle = fopen($_USERS_FILE, "r")) !== FALSE) {
+		array_shift($handle); // do not read the header line
         while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
             $hash = $data[0];
             $login = $data[1];
@@ -202,11 +203,21 @@ function add_vote(){
         fclose($handle);
     }
 
-    if (($handle = fopen($answers_file, "a")) !== FALSE) {
-		fputcsv($handle, $line_to_add,";");
-        fclose($handle);
-    }
-	record_ok_view();
+	$res = false;
+	$try = 5;
+	while ($res==false and $try>0) {
+		if (($handle = fopen($answers_file, "a")) !== FALSE) {
+			$res = fputcsv($handle, $line_to_add,";");
+			fclose($handle);
+		}
+		$try--;
+		sleep(1);
+	}
+
+	if ($res == false)
+		record_error_view();
+	else 
+		record_ok_view();
 }
 
 
@@ -372,7 +383,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 		<td><input type="number" name="identification_nb_nir_certifies" value="'.get_answer_from_key('identification_nb_nir_certifies',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
 
-	<tr><td>Total des sommes versées sur l\'année (qui auraient été soumises au PAS au 1/1/2018)</td>
+	<tr><td>Total des sommes versées à l\'usager soumises à l\'impot sur le revenu sur une année</td>
 		<td style="text-align:center;">'.get_answer_from_key('perimetre_assiette',$answer_array).'</td>
 		<td><input type="number" name="perimetre_assiette" value="'.get_answer_from_key('perimetre_assiette',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -507,6 +518,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 		<td><input type="number" name="budget_total_externe" value="'.get_answer_from_key('budget_total_externe',$answer_array).'" style="text-align:center;"/>€</td>
 	</tr>
 	</table>
+	<br> Les informations équivalentes pour la MOA sont dans certains cas difficilement consolidables. Des abaques seront appliquées sur les charges MOE pour approcher les charges MOA.
 	</div>
 
 
@@ -517,11 +529,11 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 		<td>Valeur précédente</td>
 		<td>Nouvelle valeur</td>
 	</tr>
-	<tr><td>Nombre de points ouverts fonctionnels encore ouverts auprès de la DGFiP</td>
+	<tr><td>Nombre de points ouverts fonctionnels encore ouverts</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_fonctionnelles" value="'.get_answer_from_key('nb_questions_fonctionnelles',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
-	<tr><td>Nombre de points ouverts techniques encore ouverts auprès du GIP MDS</td>
+	<tr><td>Nombre de points ouverts techniques encore ouverts</td>
 		<td style="text-align:center;">'.get_answer_from_key('nb_questions_techniques',$answer_array).'</td>
 		<td><input type="number" name="nb_questions_techniques" value="'.get_answer_from_key('nb_questions_techniques',$answer_array).'" style="text-align:center;"/></td>
 	</tr>
@@ -636,7 +648,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 		</td>
 	</tr>
 	<tr>
-		<td>Validation par l\'agence comptable du collecteur</td>
+		<td>Le schéma comptable est-il validé par l\'agence comptable du collecteur</td>
 		<td style="text-align:center;">'.get_answer_from_key('validation_agence_comptable',$answer_array).'</td>
 		<td>
 			<select name="validation_agence_comptable">
@@ -658,7 +670,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 	</tr>
 
 	<tr>
-		<td>Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des versements aux bénéficiaires </td>
+		<td>En cas de dysfonction de tout ou partie de la chaine de prélèvement de l\'impot sur le revenu,  les versements à l\'usager sont-il garantis ?</td>
 		<td style="text-align:center;">'.get_answer_from_key('mode_degrade_coeur_metier',$answer_array).'</td>
 		<td>
 			<select name="mode_degrade_coeur_metier">
@@ -669,18 +681,7 @@ Chaque collecteur sera conduit à mettre à jour les données transmises à éch
 		</td>
 	</tr>
 	<tr>
-		<td>Identification de solutions de fonctionnement dégradé afin d\'assurer la continuité des prélèvements par la DGFIP de l\'impôt collecté</td>
-		<td style="text-align:center;">'.get_answer_from_key('mode_degrade_prelevement_impot_collecte',$answer_array).'</td>
-		<td>
-			<select name="mode_degrade_prelevement_impot_collecte">
-				<option value="oui" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'oui').'>OUI</option>
-				<option value="non" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'non').'>NON</option>
-				<option value="" '.is_selected('mode_degrade_prelevement_impot_collecte',$answer_array,'').'>-</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>Organisation de la cellule de cris et identification de ses membres de la cellule de crise</td>
+		<td>Organisation de la cellule de crise et identification de ses membres de la cellule de crise</td>
 		<td style="text-align:center;">'.get_answer_from_key('process_crise_membres_cellule_crise',$answer_array).'</td>
 		<td>
 			<select name="process_crise_membres_cellule_crise">
@@ -729,6 +730,10 @@ function new_answers_file_build_view(){
 
 function record_ok_view(){
 	echo "Vos données sont enregistrées, merci.";
+}
+
+function record_error_view(){
+	echo "Une erreur est survenue. Veuillez recommencer ultérieurement.";
 }
 
 function ask_for_hash_view(){
