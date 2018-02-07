@@ -34,7 +34,7 @@ header('Content-Type: text/html; charset=utf-8');
 $answers_file = "private/reponses.csv";
 $_USERS_FILE = "private/collecteurs.csv";
 date_default_timezone_set('Europe/Paris');
-$VOTE_END_DATE = strtotime('2018-01-01 12:00:00');
+$VOTE_END_DATE = strtotime('2019-01-01 12:00:00');
 $VOTE_END_DATE_STRING = date('d/m/Y à  H\hi',$VOTE_END_DATE);
 $_URL = "https://www.dumaine.me/www/pas_dashboard/index.php";
 
