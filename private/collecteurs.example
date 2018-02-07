@@ -1,3 +1,6 @@
 hash;login;is_admin[True|False];long_name;application
-9E52TGa2Pjxdb2Q9Mmn6J9mgq82AYf4LfZ6h88SbKJ;admin;True;Administrateur;All
+hash_admin_aleatoire;admin;True;Administrateur;All
 siret_1;collecteur1;False;Collecteur1;appli1
+siret_2_appliA;collecteur2;False;Collecteur2;appli2
+siret_2_appliB;collecteur2;False;Collecteur2;appliB
+siret_2_appliC;collecteur2;False;Collecteur2;appliC
